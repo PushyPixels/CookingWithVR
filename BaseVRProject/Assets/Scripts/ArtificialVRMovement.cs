@@ -56,12 +56,12 @@ public class ArtificialVRMovement : MonoBehaviour
 
         Vector3 horizontalMovementVector = Vector3.Cross(verticalMovementVector, -Vector3.up);
 
-        Vector2 thumbstickMovementVector = moveAction.ReadValue<Vector2>();
+        Vector2 thumbstickVector = moveAction.ReadValue<Vector2>();
 
-        Debug.Log(thumbstickMovementVector);  // WHY IS THIS ALWAYS 0.0f, 0.0f ?!?
+        Debug.Log(thumbstickVector);  // WHY IS THIS ALWAYS 0.0f, 0.0f ?!?
 
-        transform.position += verticalMovementVector * thumbstickMovementVector.y * Time.deltaTime;
-        transform.position += horizontalMovementVector * thumbstickMovementVector.x * Time.deltaTime;
+        transform.position += verticalMovementVector * thumbstickVector.y * Time.deltaTime;
+        transform.position += horizontalMovementVector * thumbstickVector.x * Time.deltaTime;
     }
 
     void OnEnable()
