@@ -37,8 +37,8 @@ public class ArtificialVRMovement : MonoBehaviour
 
         Vector3 horizontalMovementVector = Vector3.Cross(verticalMovementVector,-Vector3.up);
 
-        transform.position += verticalMovementVector * Input.GetAxis(verticalAxisName) * Time.deltaTime;
-        transform.position += horizontalMovementVector * Input.GetAxis(horizontalAxisName) * Time.deltaTime;
+        transform.position += verticalMovementVector * Input.GetAxis(verticalAxisName) * maxSpeed * Time.deltaTime;
+        transform.position += horizontalMovementVector * Input.GetAxis(horizontalAxisName) * maxSpeed * Time.deltaTime;
     }
 
     void LogError()
