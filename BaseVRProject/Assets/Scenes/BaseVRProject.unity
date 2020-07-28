@@ -693,10 +693,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CameraFloorOffsetObject: {fileID: 0}
-  m_RequestedTrackingMode: 0
+  m_RequestedTrackingMode: 2
   m_TrackingOriginMode: 1
-  m_TrackingSpace: 0
-  m_CameraYOffset: 1.75
+  m_TrackingSpace: 1
+  m_CameraYOffset: 0
 --- !u!1 &1762413668
 GameObject:
   m_ObjectHideFlags: 0
