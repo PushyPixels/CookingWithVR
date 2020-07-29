@@ -9,7 +9,7 @@ public class FollowTransform : MonoBehaviour
     public bool followY = true;
     public bool followZ = true;
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         Vector3 newPosition = transform.position;
 
@@ -27,7 +27,7 @@ public class FollowTransform : MonoBehaviour
         {
             newPosition.z = target.position.z;
         }
-
+        
         transform.position = newPosition;
     }
 }

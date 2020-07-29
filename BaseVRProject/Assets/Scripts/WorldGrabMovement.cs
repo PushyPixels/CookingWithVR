@@ -29,7 +29,7 @@ public class WorldGrabMovement : MonoBehaviour
     public new Rigidbody rigidbody;
 
 	// Update is called once per frame
-	void Update ()
+	void Update()
     {
         ObjectGrabbingLogic(leftHand);
         ObjectGrabbingLogic(rightHand);
@@ -95,7 +95,12 @@ public class WorldGrabMovement : MonoBehaviour
         {
             if (Input.GetAxis(hand.gripAxis) >= 0.25f)
             {
+
+                //rigidbody.useGravity = false;
                 rigidbody.velocity = Vector3.zero;
+                //rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
+                //rigidbody.AddForce((hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime, ForceMode.VelocityChange);
+                //rigidbody.MovePosition(rigidbody.position + (hand.previousPostion - hand.rigidbody.transform.position));
                 transform.position += hand.previousPostion - hand.rigidbody.transform.position;
                 hand.state = HandState.MovementGrab;
 
@@ -107,6 +112,7 @@ public class WorldGrabMovement : MonoBehaviour
             }
             if (hand.state == HandState.MovementGrab && Input.GetAxis(hand.gripAxis) < 0.25f)
             {
+                rigidbody.useGravity = true;
                 rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
                 hand.state = HandState.Empty;
             }
