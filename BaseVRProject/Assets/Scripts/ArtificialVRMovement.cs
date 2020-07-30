@@ -18,7 +18,7 @@ public class ArtificialVRMovement : MonoBehaviour
     private bool hasThrownError;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!offhandMovementHand)
         {

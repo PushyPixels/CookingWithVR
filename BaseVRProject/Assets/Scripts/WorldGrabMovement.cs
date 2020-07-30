@@ -112,7 +112,6 @@ public class WorldGrabMovement : MonoBehaviour
             }
             if (hand.state == HandState.MovementGrab && Input.GetAxis(hand.gripAxis) < 0.25f)
             {
-                rigidbody.useGravity = true;
                 rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
                 hand.state = HandState.Empty;
             }
