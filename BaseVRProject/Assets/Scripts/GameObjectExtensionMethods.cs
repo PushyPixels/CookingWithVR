@@ -11,5 +11,5 @@ public static class GameObjectExtensionMethods
         {
             child.gameObject.SetLayerRecursively(layer);
         }
-	}
+    }
 }
