@@ -37,7 +37,7 @@ public class WorldGrabMovement : MonoBehaviour
     [Header("Required Component References")]
     public new Rigidbody rigidbody;
 
-	// Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         ObjectGrabbingLogic(leftHand);
