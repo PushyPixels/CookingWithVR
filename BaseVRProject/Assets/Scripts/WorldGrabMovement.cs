@@ -38,7 +38,7 @@ public class WorldGrabMovement : MonoBehaviour
     public new Rigidbody rigidbody;
 
 	// Update is called once per frame
-	void Update()
+    void Update()
     {
         ObjectGrabbingLogic(leftHand);
         ObjectGrabbingLogic(rightHand);
@@ -155,5 +155,5 @@ public class WorldGrabMovement : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         sqrMinimumMovementDistance = minimumMovementDistance*minimumMovementDistance;
-	}
+    }
 }
