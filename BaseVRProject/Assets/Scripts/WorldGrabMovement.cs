@@ -8,6 +8,13 @@ public class WorldGrabMovement : MonoBehaviour
     public HandInfo leftHand;
     public HandInfo rightHand;
     public LayerMask grabbableObjectLayerMask = -1;
+    public LayerMask climbableObjectLayerMask;
+    public bool changeGrabbedObjectLayer = false;
+    public string grabbedLayerName = "Grabbed";
+    public float minimumMovementDistance = 0.01f;
+
+    [HideInInspector]
+    public float sqrMinimumMovementDistance;
 
     [System.Serializable]
     public class HandInfo
@@ -20,6 +27,8 @@ public class WorldGrabMovement : MonoBehaviour
         public HandState state;
         public Vector3 grabOffset;
         public Rigidbody grippedObject;
+        public int grippedObjectOriginalLayer;
+        public bool grippedObjectIsKinematic;
         public Vector3 previousPostion;
         public bool skip;
     }
@@ -52,17 +61,26 @@ public class WorldGrabMovement : MonoBehaviour
 
     void ObjectGrabbingLogic(HandInfo hand)
     {
-        Collider[] colliders = Physics.OverlapSphere(hand.previousPostion, 0.05f*transform.localScale.x, grabbableObjectLayerMask);
+        Collider[] colliders = Physics.OverlapSphere(hand.previousPostion, hand.rigidbody.transform.localScale.x, grabbableObjectLayerMask);
         if (Input.GetAxis(hand.gripAxis) >= 0.25f)
         {
             if (colliders.Length > 0 && hand.state == HandState.Empty)
             {
                 Collider firstColliderFound = colliders[0];
-                Rigidbody rb = firstColliderFound.GetComponent<Rigidbody>();
+                Rigidbody rb = firstColliderFound.attachedRigidbody;
 
                 if(rb != null)
                 {
+                    hand.grippedObjectIsKinematic = rb.isKinematic;
                     rb.isKinematic = false;
+                    hand.grippedObjectOriginalLayer = rb.gameObject.layer;
+
+                    if(changeGrabbedObjectLayer)
+                    {
+                        rb.gameObject.SetLayerRecursively(LayerMask.NameToLayer(grabbedLayerName));
+                    }
+
+                    //rb.gameObject.SetLayerRecursively(LayerMask.NameToLayer("Grabbed"));
                     hand.grabOffset = firstColliderFound.transform.position - hand.rigidbody.transform.position;
                     hand.grippedObject = rb;
                     FixedJoint joint = rb.gameObject.AddComponent<FixedJoint>();
@@ -82,6 +100,13 @@ public class WorldGrabMovement : MonoBehaviour
             if (rb != null)
             {
                 rb.velocity = (hand.rigidbody.transform.position - hand.previousPostion) / Time.deltaTime;
+
+                if(changeGrabbedObjectLayer)
+                {
+                    rb.gameObject.SetLayerRecursively(hand.grippedObjectOriginalLayer);
+                }
+
+                rb.isKinematic = hand.grippedObjectIsKinematic;
             }
 
             hand.state = HandState.Empty;
@@ -91,11 +116,11 @@ public class WorldGrabMovement : MonoBehaviour
 
     void WorldMovementLogic(HandInfo hand, HandInfo oppositeHand)
     {
-        if(!hand.skip && hand.state != HandState.ObjectGrab)
+        if(!hand.skip && hand.state != HandState.ObjectGrab &&
+          Physics.CheckSphere(hand.previousPostion, hand.rigidbody.transform.localScale.x, climbableObjectLayerMask))
         {
             if (Input.GetAxis(hand.gripAxis) >= 0.25f)
             {
-
                 //rigidbody.useGravity = false;
                 rigidbody.velocity = Vector3.zero;
                 //rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
@@ -112,7 +137,15 @@ public class WorldGrabMovement : MonoBehaviour
             }
             if (hand.state == HandState.MovementGrab && Input.GetAxis(hand.gripAxis) < 0.25f)
             {
-                rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
+                Vector3 velocityVector = hand.previousPostion - hand.rigidbody.transform.position;
+                if(velocityVector.sqrMagnitude > sqrMinimumMovementDistance)
+                {
+                    rigidbody.velocity = (hand.previousPostion - hand.rigidbody.transform.position) / Time.deltaTime;
+                }
+                else
+                {
+                    rigidbody.velocity = Vector3.zero;
+                }
                 hand.state = HandState.Empty;
             }
         }
@@ -121,5 +154,6 @@ public class WorldGrabMovement : MonoBehaviour
     void OnValidate()
     {
         rigidbody = GetComponent<Rigidbody>();
+        sqrMinimumMovementDistance = minimumMovementDistance*minimumMovementDistance;
 	}
 }
